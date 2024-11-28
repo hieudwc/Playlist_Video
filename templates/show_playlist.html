@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách Playlist</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4e79c1, #2a5298); /* Nền gradient xanh dương */
+            color: #fff; /* Màu chữ trắng */
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            width: 100%;
+            max-width: 1400px; /* Tăng độ rộng container */
+            height: 600px; /* Tăng chiều cao container */
+        }
+
+        .left {
+            flex: 0 0 30%; /* Chiếm 30% chiều rộng */
+            background-color: rgba(255, 255, 255, 0.9); /* Màu nền trắng trong suốt */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            color: #000; /* Màu chữ đen */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .video-list {
+            flex-grow: 1;
+            overflow-y: auto; /* Thanh cuộn dọc chỉ cho danh sách video */
+            margin-top: 10px;
+            padding-right: 5px;
+        }
+
+        .right {
+            flex: 0 0 65%; /* Chiếm 65% chiều rộng */
+            background-color: rgba(255, 255, 255, 0.9); /* Màu nền trắng trong suốt */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            color: #000; /* Màu chữ đen */
+        }
+
+        .video-frame {
+            width: 100%;
+            height: 100%; /* Tăng chiều cao khung phát video */
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"] {
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-align: center;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        /* Flash thông báo cố định */
+        .flash-message {
+            position: fixed; /* Giữ cố định */
+            bottom: 20px; /* Cách đáy 20px */
+            left: 50%; /* Căn giữa ngang */
+            transform: translateX(-50%); /* Đảm bảo căn giữa đúng */
+            background-color: #fff;
+            color: black;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px 30px; /* Mở rộng khung chứa */
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            z-index: 1000; /* Luôn hiển thị trên cùng */
+            animation: fadeOut 2s ease-in-out forwards; /* Hiệu ứng biến mất */
+            width: auto; /* Để nội dung quyết định chiều rộng */
+            max-width: 80%; /* Đảm bảo không vượt quá màn hình */
+        }
+
+        /* Animation cho biến mất */
+        @keyframes fadeOut {
+            0% {
+                opacity: 1; /* Bắt đầu hiện */
+            }
+            80% {
+                opacity: 0.5; /* Dần mờ */
+            }
+            100% {
+                opacity: 0; /* Mờ hoàn toàn */
+                visibility: hidden; /* Không còn hiển thị */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Danh sách Playlist</h1>
+    <div class="container">
+        <div class="left">
+            {% if playlist %}
+                <h2>Playlist ID: {{ playlist.ID }}</h2>
+                <p><strong>Tác giả:</strong> {{ playlist.tacgia }}</p>
+                <p><strong>Mô tả:</strong> {{ playlist.mota }}</p>
+                <p><strong>Đánh giá:</strong> {{ playlist.danhgia }}</p>
+                <p><strong>Trạng thái:</strong> {{ playlist.status }}</p> <!-- Thêm dòng này -->
+                <form method="POST">
+                    <label for="video_index">Chọn video để phát (1-{{ playlist.list_videos|length }}):</label>
+                    <input type="number" id="video_index" name="video_index" min="1" max="{{ playlist.list_videos|length }}" required>
+                    <button type="submit">Phát Video</button>
+                </form>
+                <h3>Danh sách Video:</h3>
+                <div class="video-list">
+                    <ul>
+                        {% for video in playlist.list_videos %}
+                            <li>
+                                <p><strong>{{ loop.index }}.</strong> {{ video.chude }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <p>Playlist không tồn tại.</p>
+            {% endif %}
+        </div>
+        <div class="right">
+            {% if video_url %}
+                <iframe name="video-frame" class="video-frame" src="{{ video_url }}" allowfullscreen></iframe>
+            {% else %}
+                <iframe name="video-frame" class="video-frame"></iframe>
+            {% endif %}
+        </div>
+    </div>
+    <a href="{{ url_for('user_menu') }}" class="back-button">Quay lại Menu User</a>
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-message">
+                {% for category, message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sửa Playlist</title>
+    <style>
+        /* ===== Global Styles ===== */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4e79c1, #2a5298); /* Gradient Background */
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ===== Form Styles ===== */
+        form {
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px 30px;
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+            color: #000; /* Black text color */
+        }
+
+        /* ===== Input and Select Field Styles ===== */
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+            background: #fff;
+            color: #333;
+        }
+
+        textarea {
+            resize: vertical; /* Allow vertical resize */
+            height: 100px; /* Default height */
+        }
+
+        select {
+            appearance: none; /* Remove default arrow */
+            background: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="gray" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>') no-repeat right 10px center;
+            background-size: 10px; /* Arrow size */
+            cursor: pointer;
+        }
+
+        select:hover {
+            border-color: #007bff; /* Hover effect for select */
+        }
+
+        /* ===== Button Styles ===== */
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff; /* Blue background */
+            color: #fff; /* White text */
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            transform: scale(1.05); /* Slight zoom on hover */
+        }
+
+        button:active {
+            background-color: #003f7f; /* Darkest blue when clicked */
+        }
+
+        .back-button {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff; /* Blue background */
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-align: center;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .back-button:active {
+            background-color: #003f7f;
+        }
+
+        /* ===== Responsive Styles ===== */
+        @media (max-width: 768px) {
+            form {
+                padding: 15px;
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Sửa Playlist</h1>
+    <form method="POST">
+        <label for="tacgia">Tác giả:</label>
+        <input type="text" id="tacgia" name="tacgia" value="{{ playlist.tacgia }}" required>
+
+        <label for="mota">Mô tả:</label>
+        <textarea id="mota" name="mota" required>{{ playlist.mota }}</textarea>
+
+        <label for="danhgia">Đánh giá:</label>
+        <input type="number" id="danhgia" name="danhgia" value="{{ playlist.danhgia }}" min="1" max="5" required>
+
+        <label for="status">Trạng thái:</label>
+        <select id="status" name="status" required>
+            <option value="public" {% if playlist.status == 'public' %}selected{% endif %}>Public</option>
+            <option value="private" {% if playlist.status == 'private' %}selected{% endif %}>Private</option>
+        </select>
+
+        <button type="submit">Lưu</button>
+    </form>
+    <a href="{{ url_for('user_menu') }}" class="back-button">Quay lại Menu User</a>
+</body>
+</html>

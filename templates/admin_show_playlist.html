@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách Playlist</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Nền gradient xanh lam */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #4e79c1, #2a5298);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+
+        /* Khung hiển thị danh sách */
+        .playlist-container {
+            background-color: #fff; /* Khung trắng */
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            color: #333;
+            overflow-y: auto;
+            max-height: 90vh;
+            position: relative; /* Đặt position relative cho khung chứa */
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0 auto; /* Căn giữa tiêu đề */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .playlist-item {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            word-wrap: break-word; /* Tự động xuống dòng khi nội dung dài */
+        }
+
+        .playlist-item h3 {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            color: #2575fc;
+        }
+
+        /* Đảm bảo link không tràn và đẹp mắt */
+        .playlist-item a {
+            display: block;
+            word-wrap: break-word; /* Tự động xuống dòng nếu link quá dài */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Hiển thị dấu ba chấm nếu link quá dài */
+            white-space: nowrap; /* Đảm bảo link không xuống dòng trừ khi cần */
+        }
+
+        .video-item a {
+            color: #2575fc;
+            text-decoration: none;
+        }
+
+        .video-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* Nút quay lại cố định */
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            z-index: 1000; /* Đảm bảo nút luôn hiển thị trên cùng */
+        }
+
+        .back-link:hover {
+            background-color: #c82333; /* Màu đỏ đậm khi hover */
+            transform: scale(1.05);
+        }
+
+
+        /* Flash messages */
+        .flashes {
+            margin-top: 15px;
+        }
+
+        .flashes li {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Danh sách Playlist</h1>
+    </div>
+
+    <!-- Quay lại menu admin -->
+    <a href="{{ url_for('admin_menu') }}" class="back-link">Quay lại menu quản trị viên</a>
+    <div class="playlist-container">
+        <!-- Danh sách playlist -->
+        <ul class="list-unstyled">
+            {% for playlist in playlists %}
+                <li class="playlist-item">
+                    <p><strong>ID:</strong> {{ playlist.ID }}</p>
+                    <p><strong>Tác giả:</strong> {{ playlist.tacgia }}</p>
+                    <p><strong>Mô tả:</strong> {{ playlist.mota }}</p>
+                    <p><strong>Đánh giá:</strong> {{ playlist.danhgia }}</p>
+                    <p><strong>Trạng thái:</strong> {{ playlist.status }}</p>
+                    <h3>Danh sách Video:</h3>
+                    <ul>
+                        {% for video in playlist.list_videos %}
+                            <li class="video-item">
+                                <p><strong>Chủ đề:</strong> {{ video.chude }}</p>
+                                <p><strong>Link:</strong> <a href="{{ video.link }}" target="_blank">{{ video.link }}</a></p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                    {% for category, message in messages %}
+                        <li class="alert alert-{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Link to Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

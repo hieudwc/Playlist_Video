@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm Video vào Playlist</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4e79c1, #2a5298); /* Nền gradient xanh dương */
+            color: #fff; /* Màu chữ trắng */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        form {
+            background: rgba(255, 255, 255, 0.9); /* Nền trắng trong suốt */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px 30px;
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #000; /* Màu chữ đen */
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05); /* Hiệu ứng phóng to nhẹ */
+        }
+
+        button:active {
+            background-color: #003f7f;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-align: center;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .back-button:active {
+            background-color: #003f7f;
+        }
+
+        /* Flash thông báo cố định */
+        .flash-message {
+            position: fixed; /* Giữ cố định */
+            bottom: 20px; /* Cách đáy 20px */
+            left: 50%; /* Căn giữa ngang */
+            transform: translateX(-50%); /* Đảm bảo căn giữa đúng */
+            background-color: #fff;
+            color: black;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px 30px; /* Mở rộng khung chứa */
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            z-index: 1000; /* Luôn hiển thị trên cùng */
+            animation: fadeOut 2s ease-in-out forwards; /* Hiệu ứng biến mất */
+            width: auto; /* Để nội dung quyết định chiều rộng */
+            max-width: 80%; /* Đảm bảo không vượt quá màn hình */
+        }
+
+        /* Animation cho biến mất */
+        @keyframes fadeOut {
+            0% {
+                opacity: 1; /* Bắt đầu hiện */
+            }
+            80% {
+                opacity: 0.5; /* Dần mờ */
+            }
+            100% {
+                opacity: 0; /* Mờ hoàn toàn */
+                visibility: hidden; /* Không còn hiển thị */
+            }
+        }
+
+        @media (max-width: 768px) {
+            form {
+                padding: 15px;
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Thêm Video vào Playlist</h1>
+    <form method="POST">
+        <label for="chude">Chủ đề:</label>
+        <input type="text" id="chude" name="chude" placeholder="Nhập chủ đề" required>
+
+        <label for="link">Link:</label>
+        <input type="url" id="link" name="link" placeholder="Nhập link video" required>
+
+        <button type="submit">Thêm Video</button>
+    </form>
+
+    <a href="{{ url_for('user_menu') }}" class="back-button">Quay lại Menu User</a>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-message">
+                {% for category, message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>

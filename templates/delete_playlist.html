@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xóa Playlist</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Nền gradient xanh lam */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #4e79c1, #2a5298);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0 auto; /* Căn giữa tiêu đề */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Khung hiển thị */
+        .delete-container {
+            background-color: #fff; /* Khung trắng */
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            color: #333;
+            position: relative; /* Đặt position relative cho khung chứa */
+        }
+
+        .delete-container h1 {
+            color: #4e79c1; /* Chữ xanh đậm */
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Khung chứa thông tin Playlist */
+        .playlist-item {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column; /* Xếp các phần tử theo chiều dọc */
+            position: relative; /* Để căn chỉnh nút "Xóa" */
+            width: auto; /* Để khung tự động điều chỉnh theo nội dung */
+        }
+
+        /* Cải thiện khung ID, giúp nó không chiếm quá rộng */
+        .playlist-item p:first-child {
+            display: inline-block; /* Hiển thị ID theo dòng ngang */
+            white-space: nowrap; /* Ngừng gói dòng cho ID */
+            width: auto; /* Chiều rộng tự động theo nội dung */
+            margin-right: 30px; /* Tạo khoảng cách với phần tử kế tiếp */
+            font-weight: bold;
+        }
+
+        /* Căn chỉnh nút "Xóa" sang góc trên bên phải */
+        .playlist-item form {
+            position: absolute;
+            top: -5px; /* Lùi nút "Xóa" lên trên một chút */
+            right: 10px; /* Căn nút "Xóa" sang bên phải */
+        }
+
+        /* Chỉnh sửa cho nút Xóa */
+        .btn-danger {
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-weight: bold;
+            color: #fff; /* Màu chữ trắng */
+        }
+
+        .btn-danger:hover {
+            background-color: #e53e3e; /* Màu nền của nút khi hover (màu đỏ đậm) */
+            border-color: #e53e3e; /* Đường viền khi hover */
+            transform: scale(1.05);
+        }
+
+        /* Nút quay lại cố định */
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            z-index: 1000; /* Đảm bảo nút luôn hiển thị trên cùng */
+        }
+
+        .back-link:hover {
+            color: #c82333;
+            transform: scale(1.05);
+        }
+
+        /* Flash thông báo cố định */
+        .flash-message {
+            position: fixed; /* Giữ cố định */
+            bottom: 20px; /* Cách đáy 20px */
+            left: 50%; /* Căn giữa ngang */
+            transform: translateX(-50%); /* Đảm bảo căn giữa đúng */
+            background-color: #fff;
+            color: black;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px 30px; /* Mở rộng khung chứa */
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            z-index: 1000; /* Luôn hiển thị trên cùng */
+            animation: fadeOut 2s ease-in-out forwards; /* Hiệu ứng biến mất */
+            width: auto; /* Để nội dung quyết định chiều rộng */
+            max-width: 80%; /* Đảm bảo không vượt quá màn hình */
+        }
+
+        /* Animation cho biến mất */
+        @keyframes fadeOut {
+            0% {
+                opacity: 1; /* Bắt đầu hiện */
+            }
+            80% {
+                opacity: 0.5; /* Dần mờ */
+            }
+            100% {
+                opacity: 0; /* Mờ hoàn toàn */
+                visibility: hidden; /* Không còn hiển thị */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Xóa Playlist</h1>
+    </div>
+
+    <div class="delete-container">
+
+        <!-- Danh sách Playlist -->
+        <div class="playlist-list">
+            {% for playlist in playlists %}
+                <div class="playlist-item">
+                    <p><strong>ID:</strong> {{ playlist.ID }}</p>
+                    <p><strong>Tác giả:</strong> {{ playlist.tacgia }}</p>
+                    <p><strong>Mô tả:</strong> {{ playlist.mota }}</p>
+                    <p><strong>Đánh giá:</strong> {{ playlist.danhgia }}</p>
+                    <form method="POST" class="mt-3">
+                        <input type="hidden" name="playlist_id" value="{{ playlist.ID }}">
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Quay lại menu admin -->
+        <a href="{{ url_for('admin_menu') }}" class="back-link">Quay lại menu quản trị viên</a>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-message">
+                    {% for category, message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Link to Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

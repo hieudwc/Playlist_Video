@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách Playlist Công Khai</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4e79c1, #2a5298);
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+            min-height: 100vh;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            max-width: 1400px;
+            flex-grow: 1;
+        }
+
+        .left, .right {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            color: #333;
+        }
+
+        .left {
+            flex: 0 0 35%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .video-list {
+            overflow-y: auto;
+            max-height: 300px;
+            margin-top: 15px;
+            padding-right: 10px;
+        }
+
+        .right {
+            flex: 0 0 60%;
+            display: flex;
+            flex-direction: column;
+            justify-content: stretch;
+            align-items: stretch;
+        }
+
+        .video-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        select, input[type="number"], button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        button {
+            background: linear-gradient(90deg, #007bff, #0056b3);
+            color: #fff;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, #0056b3, #003d82);
+            transform: scale(1.05);
+        }
+
+        .back-button {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: #fff;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-align: center;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+        }
+
+        /* Flash thông báo cố định */
+        .flash-message {
+            position: fixed; /* Giữ cố định */
+            bottom: 20px; /* Cách đáy 20px */
+            left: 50%; /* Căn giữa ngang */
+            transform: translateX(-50%); /* Đảm bảo căn giữa đúng */
+            background-color: #fff;
+            color: black;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px 30px; /* Mở rộng khung chứa */
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            z-index: 1000; /* Luôn hiển thị trên cùng */
+            animation: fadeOut 2s ease-in-out forwards; /* Hiệu ứng biến mất */
+            width: auto; /* Để nội dung quyết định chiều rộng */
+            max-width: 80%; /* Đảm bảo không vượt quá màn hình */
+        }
+
+        /* Animation cho biến mất */
+        @keyframes fadeOut {
+            0% {
+                opacity: 1; /* Bắt đầu hiện */
+            }
+            80% {
+                opacity: 0.5; /* Dần mờ */
+            }
+            100% {
+                opacity: 0; /* Mờ hoàn toàn */
+                visibility: hidden; /* Không còn hiển thị */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Danh sách Playlist Công Khai</h1>
+    <div class="container">
+        <div class="left">
+            <!-- Nội dung bên trái -->
+            {% if playlists %}
+                <form method="POST">
+                    <label for="playlist_id">Chọn playlist để xem:</label>
+                    <select id="playlist_id" name="playlist_id" required>
+                        {% for playlist in playlists %}
+                            <option value="{{ playlist.ID }}">{{ playlist.tacgia }} - {{ playlist.mota }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Xem Playlist</button>
+                </form>
+
+                {% if selected_playlist %}
+                    <div class="playlist-item">
+                        <h3>Playlist ID: {{ selected_playlist.ID }}</h3>
+                        <p><strong>Tác giả:</strong> {{ selected_playlist.tacgia }}</p>
+                        <p><strong>Mô tả:</strong> {{ selected_playlist.mota }}</p>
+                        <p><strong>Đánh giá:</strong> {{ selected_playlist.danhgia }}</p>
+                        <p><strong>Trạng thái:</strong> {{ selected_playlist.status }}</p>
+                        <form method="POST">
+                            <input type="hidden" name="selected_playlist_id" value="{{ selected_playlist.ID }}">
+                            <label for="video_index">Chọn video để phát (1-{{ selected_playlist.list_videos|length }}):</label>
+                            <input type="number" id="video_index" name="video_index" min="1" max="{{ selected_playlist.list_videos|length }}" required>
+                            <button type="submit">Phát Video</button>
+                        </form>
+                        <h4>Danh sách Video:</h4>
+                        <div class="video-list">
+                            <ul>
+                                {% for video in selected_playlist.list_videos %}
+                                    <li>
+                                        <strong>{{ loop.index }}.</strong> {{ video.chude }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <p>Không có playlist công khai nào.</p>
+            {% endif %}
+        </div>
+        <div class="right">
+            {% if video_url %}
+                <iframe name="video-frame" class="video-frame" src="{{ video_url }}" allowfullscreen></iframe>
+            {% else %}
+                <iframe name="video-frame" class="video-frame"></iframe>
+            {% endif %}
+        </div>
+    </div>
+    <a href="{{ url_for('user_menu') }}" class="back-button">Quay lại Menu User</a>
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-message">
+                {% for category, message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>

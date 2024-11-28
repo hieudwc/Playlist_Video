@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xóa Video khỏi Playlist</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4e79c1, #2a5298); /* Nền gradient xanh dương */
+            color: #fff; /* Màu chữ trắng */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        form {
+            background: rgba(255, 255, 255, 0.9); /* Nền trắng trong suốt */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px 30px;
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+            color: #000; /* Màu chữ đen */
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #ff4d4d; /* Nền đỏ */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #d93636; /* Đỏ đậm hơn khi hover */
+            transform: scale(1.05); /* Hiệu ứng phóng to nhẹ */
+        }
+
+        button:active {
+            background-color: #b32020;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff; /* Nền xanh dương */
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-align: center;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .back-button:active {
+            background-color: #003f7f;
+        }
+
+        .flash-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #28a745; /* Màu nền xanh lá */
+            color: #fff; /* Màu chữ trắng */
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 1;
+            transition: opacity 2s ease-in-out;
+        }
+
+        .flash-message.fade-out {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Xóa Video khỏi Playlist</h1>
+    <form method="POST">
+        <label for="video_index">Chọn video để xóa:</label>
+        <select id="video_index" name="video_index" required>
+            {% for index in range(playlist.list_videos|length) %}
+                <option value="{{ index + 1 }}"> {{ playlist.list_videos[index].chude }} </option>
+            {% endfor %}
+        </select>
+        <button type="submit">Xóa Video</button>
+    </form>
+    <a href="{{ url_for('user_menu') }}" class="back-button">Quay lại Menu User</a>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-message" id="flash-message">
+                {% for category, message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <script>
+        window.onload = function() {
+            const flashMessage = document.getElementById('flash-message');
+            if (flashMessage) {
+                setTimeout(() => {
+                    flashMessage.classList.add('fade-out');
+                }, 2000); // Thời gian chờ trước khi bắt đầu hiệu ứng tắt dần
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Danh sách Playlist</title>
+</head>
+<body>
+    <h1>Danh sách Playlist</h1>
+    <ul>
+        {% for playlist in playlists %}
+            <li>
+                <b>Tác giả:</b> {{ playlist['tacgia'] }}<br>
+                <b>Mô tả:</b> {{ playlist['mota'] }}<br>
+                <b>Đánh giá:</b> {{ playlist['danhgia'] }}<br>
+                <a href="{{ url_for('edit_playlist', id=playlist['ID']) }}">Sửa</a> |
+                <a href="{{ url_for('delete_playlist', id=playlist['ID']) }}">Xóa</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('add_playlist') }}">Thêm Playlist mới</a>
+</body>
+</html>

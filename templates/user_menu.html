@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Người Dùng</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4e79c1, #2a5298); /* Nền gradient xanh dương */
+            color: #000; /* Màu chữ đen */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: #fff; /* Màu chữ trắng cho tiêu đề */
+        }
+
+        .menu {
+            background: rgba(255, 255, 255, 0.9); /* Nền trắng trong suốt */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px 30px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .menu .menu-item {
+            display: block;
+            margin-bottom: 15px;
+            background-color: #007bff; /* Màu xanh dương */
+            color: #fff; /* Màu chữ trắng */
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .menu .menu-item:hover {
+            background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+            transform: scale(1.05); /* Phóng to nhẹ khi hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu .menu-item:active {
+            background-color: #003f7f; /* Màu xanh đậm hơn khi click */
+        }
+
+        .logout {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #d9534f; /* Màu đỏ cho nút đăng xuất */
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .logout:hover {
+            background-color: #c9302c; /* Màu đỏ đậm hơn khi hover */
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .logout:active {
+            background-color: #ac2925;
+        }
+
+        /* Flash thông báo cố định */
+        .flash-message {
+            position: fixed; /* Giữ cố định */
+            bottom: 20px; /* Cách đáy 20px */
+            left: 50%; /* Căn giữa ngang */
+            transform: translateX(-50%); /* Đảm bảo căn giữa đúng */
+            background-color: #fff;
+            color: black;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px 30px; /* Mở rộng khung chứa */
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            z-index: 1000; /* Luôn hiển thị trên cùng */
+            animation: fadeOut 2s ease-in-out forwards; /* Hiệu ứng biến mất */
+            width: auto; /* Để nội dung quyết định chiều rộng */
+            max-width: 80%; /* Đảm bảo không vượt quá màn hình */
+        }
+
+        /* Animation cho biến mất */
+        @keyframes fadeOut {
+            0% {
+                opacity: 1; /* Bắt đầu hiện */
+            }
+            80% {
+                opacity: 0.5; /* Dần mờ */
+            }
+            100% {
+                opacity: 0; /* Mờ hoàn toàn */
+                visibility: hidden; /* Không còn hiển thị */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Menu Người Dùng</h1>
+    <div class="menu">
+        <a href="{{ url_for('create_playlist') }}" class="menu-item">Tạo playlist</a>
+        <a href="{{ url_for('show_playlist') }}" class="menu-item">Hiển thị playlist</a>
+        <a href="{{ url_for('add_video') }}" class="menu-item">Thêm video vào playlist</a>
+        <a href="{{ url_for('update_playlist') }}" class="menu-item">Cập nhật playlist</a>
+        <a href="{{ url_for('delete_video') }}" class="menu-item">Xóa video khỏi playlist</a>
+        <a href="{{ url_for('public_playlists') }}" class="menu-item">Xem playlist công khai</a> <!-- Thêm dòng này -->
+        <a href="{{ url_for('logout') }}" class="logout">Đăng xuất</a>
+    </div>
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-message">
+                    {% for category, message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+</body>
+</html>

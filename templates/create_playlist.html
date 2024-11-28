@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo Playlist</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4e79c1, #2a5298); /* Nền gradient xanh dương */
+            color: #fff; /* Màu chữ trắng */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        form {
+            background: rgba(255, 255, 255, 0.9); /* Nền trắng trong suốt */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px 30px;
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+
+        form label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #000; /* Màu chữ đen */
+        }
+
+        form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: #fff; /* Nền trắng */
+            color: #000; /* Màu chữ đen */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        form select:focus {
+            border-color: #007bff; /* Đổi màu viền khi focus */
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2); /* Hiệu ứng khi focus */
+            outline: none; /* Loại bỏ đường viền mặc định */
+        }
+
+        form select:hover {
+            border-color: #0056b3; /* Đổi màu viền khi hover */
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #007bff; /* Màu xanh dương đậm */
+            margin-top: 20px;
+        }
+
+        #videos > div {
+            margin-bottom: 20px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            background-color: #007bff; /* Màu xanh dương */
+            color: #fff; /* Màu chữ trắng */
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3; /* Màu xanh dương đậm hơn khi hover */
+            transform: scale(1.05); /* Phóng to nhẹ khi hover */
+        }
+
+        button:active {
+            background-color: #003f7f; /* Màu xanh dương đậm hơn khi nhấn */
+        }
+
+        .back-button {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-align: center;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            form {
+                padding: 15px;
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Tạo Playlist</h1>
+    <form method="POST">
+        <label for="tacgia">Tác giả:</label>
+        <input type="text" id="tacgia" name="tacgia" placeholder="Nhập tên tác giả" required>
+
+        <label for="mota">Mô tả:</label>
+        <input type="text" id="mota" name="mota" placeholder="Nhập mô tả" required>
+
+        <label for="danhgia">Đánh giá:</label>
+        <input type="number" id="danhgia" name="danhgia" placeholder="Nhập đánh giá" min="1" max="5" required>
+
+        <label for="status">Trạng thái:</label>
+        <select id="status" name="status" required>
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+        </select>
+
+        <h2>Thêm Video</h2>
+        <label for="videoCount">Số lượng video :</label>
+        <input type="number" id="videoCount" name="videoCount" min="1" max="5" placeholder="Nhập số lượng video" onchange="updateVideoFields()" required>
+
+        <div id="videos"></div>
+
+        <button type="submit">Tạo Playlist</button>
+    </form>
+
+    <a href="#" class="back-button" onclick="goBack()">Quay lại Menu User</a>
+
+    <script>
+        function updateVideoFields() {
+            const videoCount = parseInt(document.getElementById('videoCount').value, 10) || 0;
+            const videosContainer = document.getElementById('videos');
+            videosContainer.innerHTML = ''; // Xóa nội dung cũ
+
+            for (let i = 1; i <= videoCount; i++) {
+                const videoField = document.createElement('div');
+                videoField.innerHTML = `
+                    <label for="chude_${i}">Chủ đề ${i}:</label>
+                    <input type="text" id="chude_${i}" name="chude_${i}" placeholder="Nhập chủ đề">
+                    <label for="link_${i}">Link ${i}:</label>
+                    <input type="url" id="link_${i}" name="link_${i}" placeholder="Nhập link video">
+                `;
+                videosContainer.appendChild(videoField);
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>
